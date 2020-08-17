@@ -1,0 +1,29 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+register:
+  path: /users
+  controller: App\Controller\AuthController::register
+  methods: POST
+
+users:
+  path: /users
+  controller: App\Controller\AuthController::getUsers
+
+api_login_check:
+  path: /api/login_check
+  controller: App\Controller\AuthController::getTokenUser
+
+test:
+  path: /api/test
+  controller: App\Controller\ApiController::test
+
+order:
+  path: /users/{id}/orders
+  controller: App\Controller\OrderController::addOrder
+  methods: POST
+
+orders:
+ path: /users/{id}/orders
+ controller: App\Controller\OrderController::getOrder
+ methods : GET

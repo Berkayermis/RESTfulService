@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %} Login Page {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+{% block body %}
+    <div class="container center mt-5" style="border: 1px solid black; max-width: 400px; height: 200px">
+<h1>Login Page</h1>
+
+        {% if error %}
+            <span style="color: #C82829">
+                {{ error.messageKey }}
+            </span>
+        {% endif %}
+
+    <form  method="POST">
+        <li style="list-style: none;">
+            <ul style="list-style: none">
+                Username:<input type="text" name="_username" value="{{ last_username }}" placeholder="Username..">
+
+            </ul>
+            <ul>
+                Password:<input type="password" name="_password" placeholder="Password..">
+            </ul>
+        </li>
+
+        <button class="btn btn-dark" type="submit">Login</button>
+    </form>
+    </div>
+
+    {% block javascripts %}
+        <script>
+            https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js
+                https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js
+        </script>{% endblock %}
+
+{% endblock %}

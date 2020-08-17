@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Spartan&display=swap">
+
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+
+            <nav class="navbar navbar-light bg-dark sticky-top" style="height: 100px;">
+                <a class="navbar-brand" href="{{ path('index') }}">
+                    <p class="ml-5" style="color: white;">🆂🆃🅾🆁🅴</p>
+                </a>
+                <div class="d-flex">
+                    <div><a href="{{ path('index') }}" class=" btn btn-light mr-3">Anasayfa</a> </div>
+                    <div><a class="btn btn-light mr-3">İletişim</a></div>
+                    <div><a style="color: white" class="btn btn-danger mr-3"><strong>Sepet</strong></a></div>
+                </div>
+
+            </nav>
+
+<div class="container center mt-5">
+    <h1>Welcome</h1>
+</div>
+        {% endblock %}
+        {% block javascripts %}
+            <script>
+                https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js
+                    https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js
+
+            </script>
+            <script src="https://kit.fontawesome.com/35d0fe4999.js" crossorigin="anonymous"></script>
+        {% endblock %}
+    </body>
+</html>
