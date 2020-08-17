@@ -3,7 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
+use App\Controller\AuthController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,14 +20,11 @@ class OrderController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param OrderRepository $orderRepository
-     * @param UserRepository $userRepository
-     * @param $id
+     * @param AuthController
      * @return JsonResponse
      * @Route("/users/{id}/orders", name="orders_add", methods={"POST"})
      */
-    public function addOrder(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository,UserRepository $userRepository,$id){
-
+    public function addOrder(Request $request, EntityManagerInterface $entityManager){
 
         try{
             $request = $this->transformJsonBody($request);

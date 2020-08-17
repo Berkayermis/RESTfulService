@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,13 +30,13 @@ class AuthController extends ApiController
 
     /**
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $encoder
      * @return JsonResponse
      * @Route("/users", name="users", methods={"POST"})
      */
-    public function register(Request $request, UserPasswordEncoderInterface $encoder)
+    public function register(Request $request,EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
     {
-        $em = $this->getDoctrine()->getManager();
         $request = $this->transformJsonBody($request);
         $username = $request->get('username');
         $password = $request->get('password');
@@ -43,7 +44,6 @@ class AuthController extends ApiController
         if (empty($username) || empty($password)){
             return $this->respondValidationError("Invalid Username or Password");
         }
-
 
         $user = new User();
         $user->setUsername($username);
@@ -71,7 +71,6 @@ class AuthController extends ApiController
      */
     public function getSingleUser(UserRepository $userRepository, $id){
         $user = $userRepository->find($id);
-        $id = $user->getId();
 
         if (!$user){
             $data = [
@@ -80,7 +79,7 @@ class AuthController extends ApiController
             ];
             return $this->response($data, 404);
         }
-        return $this->response((array)("username: ".$user->getUsername(). " password: ".$user->getPassword()));
+        return $this->response((array)("username: ".$user->getUsername(). ", password: ".$user->getPassword()));
     }
 
 }

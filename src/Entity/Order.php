@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
  */
-class Order implements \Serializable
+class Order implements \JsonSerializable
 {
 
     /**
@@ -113,7 +113,8 @@ class Order implements \Serializable
         $user = $userRepository->find($id);
     }
 
-
+/*
+ *
     public function serialize()
     {
         return serialize([
@@ -138,5 +139,19 @@ class Order implements \Serializable
             $this->shippingDate
             )=unserialize($string,['allowed_classes'=>false]);
     }
+ */
 
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "orderCode" => $this->getOrderCode(),
+            "productId" => $this->getProductId(),
+            "quantity" => $this->getQuantity(),
+            "address" => $this->getAddress(),
+            "shippingDate" => $this->getShippingDate()
+        ];
+    }
 }

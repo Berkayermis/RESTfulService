@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User implements  UserInterface, \Serializable
+class User implements  UserInterface, \JsonSerializable
 {
     /**
      * @var int
@@ -70,7 +70,9 @@ class User implements  UserInterface, \Serializable
     }
     public function eraseCredentials(){
     }
-    
+
+/*
+ *
     public function serialize()
     {
         return serialize([
@@ -86,6 +88,18 @@ class User implements  UserInterface, \Serializable
             $this->id,
             $this->username,
             $this->password
-        )=unserialize($string,['allowed_classes'=>false]);
+            )=unserialize($string,['allowed_classes'=>false]);
+    }
+    */
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "username" => $this->getUsername(),
+            "password" => $this->getPassword()
+        ];
     }
 }
