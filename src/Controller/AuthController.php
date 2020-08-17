@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hicham benkachoud
- * Date: 06/01/2020
- * Time: 20:39
- */
-
 namespace App\Controller;
 
 
@@ -52,7 +45,7 @@ class AuthController extends ApiController
         }
 
 
-        $user = new User($username);
+        $user = new User();
         $user->setUsername($username);
         $user->setPassword($encoder->encodePassword($user, $password));
         $em->persist($user);

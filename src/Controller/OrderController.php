@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hicham benkachoud
- * Date: 02/01/2020
- * Time: 22:44
- */
-
 namespace App\Controller;
-
 
 use App\Entity\Order;
 use App\Repository\OrderRepository;
@@ -68,7 +60,6 @@ class OrderController extends AbstractController
         }
 
     }
-
 
     /**
      * @param OrderRepository $orderRepository
