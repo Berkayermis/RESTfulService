@@ -9,6 +9,7 @@ register:
 users:
   path: /users
   controller: App\Controller\AuthController::getUsers
+  methods: GET
 
 api_login_check:
   path: /api/login_check
@@ -19,6 +20,13 @@ test:
   controller: App\Controller\ApiController::test
 
 order:
-  path: /api/login_check/{id}/orders
+  path: /users/{userId}/orders
   controller: App\Controller\OrderController::addOrder
+  methods: POST
+
+specific_orders:
+  path: /users/{userId}/orders/{orderId}
+  controller: App\Controller\OrderController::getOrder
+  methods: GET
+
 

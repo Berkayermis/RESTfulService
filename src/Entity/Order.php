@@ -14,20 +14,20 @@ class Order implements \JsonSerializable
 
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
+
+    /**
+     * @ORM\Column(type="integer",unique=true)
+     */
+    private $order_code;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $orderCode;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $productId;
+    private $product_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -42,8 +42,8 @@ class Order implements \JsonSerializable
     /**
      * @ORM\Column(type="integer")
      */
-    private $shippingDate;
-
+    private $shipping_date;
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -51,24 +51,24 @@ class Order implements \JsonSerializable
 
     public function getOrderCode(): ?int
     {
-        return $this->orderCode;
+        return $this->order_code;
     }
 
-    public function setOrderCode(int $orderCode): self
+    public function setOrderCode(int $order_code): self
     {
-        $this->orderCode = $orderCode;
+        $this->order_code = $order_code;
 
         return $this;
     }
 
     public function getProductId(): ?int
     {
-        return $this->productId;
+        return $this->product_id;
     }
 
-    public function setProductId(int $productId): self
+    public function setProductId(int $product_id): self
     {
-        $this->productId = $productId;
+        $this->product_id = $product_id;
 
         return $this;
     }
@@ -99,47 +99,15 @@ class Order implements \JsonSerializable
 
     public function getShippingDate(): ?int
     {
-        return $this->shippingDate;
+        return $this->shipping_date;
     }
 
-    public function setShippingDate(int $shippingDate): self
+    public function setShippingDate(int $shipping_date): self
     {
-        $this->shippingDate = $shippingDate;
+        $this->shipping_date = $shipping_date;
 
         return $this;
     }
-
-    public function takeUser(UserRepository $userRepository,$id){
-        $user = $userRepository->find($id);
-    }
-
-/*
- *
-    public function serialize()
-    {
-        return serialize([
-
-            $this->id,
-            $this->orderCode,
-            $this->productId,
-            $this->quantity,
-            $this->address,
-            $this->shippingDate
-        ]);
-    }
-
-    public function unserialize($string)
-    {
-        list(
-            $this->id,
-            $this->orderCode,
-            $this->productId,
-            $this->quantity,
-            $this->address,
-            $this->shippingDate
-            )=unserialize($string,['allowed_classes'=>false]);
-    }
- */
 
     /**
      * @inheritDoc
@@ -147,11 +115,12 @@ class Order implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "orderCode" => $this->getOrderCode(),
-            "productId" => $this->getProductId(),
+
+            "order_code" => $this->getOrderCode(),
+            "product_id" => $this->getProductId(),
             "quantity" => $this->getQuantity(),
             "address" => $this->getAddress(),
-            "shippingDate" => $this->getShippingDate()
+            "shipping_date" => $this->getShippingDate()
         ];
     }
 }

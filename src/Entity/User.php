@@ -71,27 +71,6 @@ class User implements  UserInterface, \JsonSerializable
     public function eraseCredentials(){
     }
 
-/*
- *
-    public function serialize()
-    {
-        return serialize([
-            $this->id,
-            $this->username,
-            $this->password
-        ]);
-    }
-
-    public function unserialize($string)
-    {
-        list(
-            $this->id,
-            $this->username,
-            $this->password
-            )=unserialize($string,['allowed_classes'=>false]);
-    }
-    */
-
     /**
      * @inheritDoc
      */

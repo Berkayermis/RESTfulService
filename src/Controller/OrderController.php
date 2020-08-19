@@ -4,11 +4,14 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
 use App\Controller\AuthController;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class OrderController
@@ -19,28 +22,40 @@ class OrderController extends AbstractController
 {
     /**
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @param AuthController
+     * @param EntityManagerInterface $em
+     * @param UserRepository $userRepository
+     * @param $userId
      * @return JsonResponse
-     * @Route("/users/{id}/orders", name="orders_add", methods={"POST"})
+     * @Route("/users/{userId}/orders", name="orders_add", methods={"POST"})
      */
-    public function addOrder(Request $request, EntityManagerInterface $entityManager){
+    public function addOrder(Request $request, EntityManagerInterface $em,UserRepository $userRepository,$userId)
+    {
+        $user = $userRepository->find($userId);
 
         try{
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->get('orderCode') || !$request->request->get('productId') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shippingDate')){
-                throw new \Exception();
+            if (!$request || !$request->get('order_code') || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
+                throw new Exception();
+            }
+            else if (!$user) {
+                $data = [
+                    'status' => 404,
+                    'errors' => "User not found",
+                ];
+                return $this->response($data, 404);
             }
 
+
             $order = new Order();
-            $order->setOrderCode($request->get('orderCode'));
-            $order->setProductId($request->get('productId'));
+            $order->setOrderCode($request->get('order_code'));
+            $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
-            $order->setShippingDate($request->get('shippingDate'));
-            $entityManager->persist($order);
-            $entityManager->flush();
+            $order->setShippingDate($request->get('shipping_date'));
+            $em->persist($order);
+            $em->flush();
+
 
             $data = [
                 'status' => 200,
@@ -48,10 +63,11 @@ class OrderController extends AbstractController
             ];
             return $this->response($data);
 
-        }catch (\Exception $e){
+        }catch (Exception $e){
             $data = [
                 'status' => 422,
                 'errors' => "Order no valid",
+
             ];
             return $this->response($data, 422);
         }
@@ -60,32 +76,51 @@ class OrderController extends AbstractController
 
     /**
      * @param OrderRepository $orderRepository
-     * @param $id
+     * @param UserRepository $userRepository
+     * @param $userId
+     * @param $orderId
      * @return JsonResponse
-     * @Route("/users/{id}/orders", name="orders_get", methods={"GET"})
+     * @Route("/users/{userId}/orders{orderId}", name="orders_get", methods={"GET"})
      */
-    public function getOrder(OrderRepository $orderRepository, $id){
-        $order = $orderRepository->find($id);
+    public function getOrder(OrderRepository $orderRepository,UserRepository $userRepository, $userId,$orderId)
+    {
+        $order = $orderRepository->find($orderId);
+        $user = $userRepository->find($userId);
 
-        if (!$order){
+        if (!$order) {
             $data = [
                 'status' => 404,
                 'errors' => "Order not found",
             ];
-            return $this->response($data, 404);
+            return $this->response((array)$order);
         }
-        return $this->response((array)$order);
-    }
+
+        else
+            if (!$user) {
+                $data = [
+                    'status' => 404,
+                    'errors' => "User not found",
+                ];
+
+                return $this->response($data, 404);
+            }
+            return $this->response((array)$user);
+        }
+
+
 
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param OrderRepository $orderRepository
      * @param $id
+     * @param $idTwo
      * @return JsonResponse
-     * @Route("/users/{id}/orders/", name="orders_put", methods={"PUT"})
+     * @Route("/users/{id}/orders/{idTwo}", name="orders_put", methods={"PUT"})
      */
-    public function updateOrder(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id){
+    public function updateOrder(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id,$idTwo){
+
+
 
         try{
             $order = $orderRepository->find($id);
@@ -101,7 +136,7 @@ class OrderController extends AbstractController
             $request = $this->transformJsonBody($request);
 
             if (!$request || !$request->get('orderCode') || !$request->request->get('productId')){
-                throw new \Exception();
+                throw new Exception();
             }
 
             $order->setOrderCode($request->get('orderCode'));
@@ -118,7 +153,7 @@ class OrderController extends AbstractController
             ];
             return $this->response($data);
 
-        }catch (\Exception $e){
+        }catch (Exception $e){
             $data = [
                 'status' => 422,
                 'errors' => "Order no valid",
