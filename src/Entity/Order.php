@@ -19,15 +19,19 @@ class Order implements \JsonSerializable
      */
     protected $id;
 
+
     /**
      * @ORM\Column(type="integer",unique=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      */
-    private $order_code;
+    private $user_id;
+
 
     /**
      * @ORM\Column(type="integer")
      */
     private $product_id;
+
 
     /**
      * @ORM\Column(type="integer")
@@ -47,18 +51,6 @@ class Order implements \JsonSerializable
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getOrderCode(): ?int
-    {
-        return $this->order_code;
-    }
-
-    public function setOrderCode(int $order_code): self
-    {
-        $this->order_code = $order_code;
-
-        return $this;
     }
 
     public function getProductId(): ?int
@@ -109,14 +101,24 @@ class Order implements \JsonSerializable
         return $this;
     }
 
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): self
+    {
+        $this->user_id = $user_id;
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
     public function jsonSerialize()
     {
         return [
-
-            "order_code" => $this->getOrderCode(),
+            "user_id" => $this->getUserId(),
             "product_id" => $this->getProductId(),
             "quantity" => $this->getQuantity(),
             "address" => $this->getAddress(),

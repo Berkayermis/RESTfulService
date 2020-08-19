@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -29,6 +30,14 @@ class User implements  UserInterface, \JsonSerializable
      * @ORM\Column(type="string", length=255)
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user_id")
+     *
+     * @return Collection|Order[]
+     */
+    private $orders;
 
     public function getId(): ?int
     {
@@ -59,6 +68,11 @@ class User implements  UserInterface, \JsonSerializable
         return $this;
     }
 
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
 
     public function getRoles(){
         return [
@@ -78,7 +92,8 @@ class User implements  UserInterface, \JsonSerializable
     {
         return [
             "username" => $this->getUsername(),
-            "password" => $this->getPassword()
+            "password" => $this->getPassword(),
+            "orders" => $this->getOrders()
         ];
     }
 }

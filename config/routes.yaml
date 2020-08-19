@@ -20,12 +20,12 @@ test:
   controller: App\Controller\ApiController::test
 
 order:
-  path: /users/{userId}/orders
+  path: /orders
   controller: App\Controller\OrderController::addOrder
   methods: POST
 
 specific_orders:
-  path: /users/{userId}/orders/{orderId}
+  path: /orders/{id}
   controller: App\Controller\OrderController::getOrder
   methods: GET
 

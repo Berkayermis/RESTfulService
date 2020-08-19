@@ -23,32 +23,21 @@ class OrderController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $em
-     * @param UserRepository $userRepository
-     * @param $userId
      * @return JsonResponse
-     * @Route("/users/{userId}/orders", name="orders_add", methods={"POST"})
+     * @Route("/orders", name="orders_add", methods={"POST"})
      */
-    public function addOrder(Request $request, EntityManagerInterface $em,UserRepository $userRepository,$userId)
+    public function addOrder(Request $request, EntityManagerInterface $em)
     {
-        $user = $userRepository->find($userId);
 
         try{
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->get('order_code') || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
+            if (!$request || !$request->request->get('user_id')  || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
                 throw new Exception();
             }
-            else if (!$user) {
-                $data = [
-                    'status' => 404,
-                    'errors' => "User not found",
-                ];
-                return $this->response($data, 404);
-            }
-
 
             $order = new Order();
-            $order->setOrderCode($request->get('order_code'));
+            $order->setUserId($request->get('user_id'));
             $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
@@ -71,40 +60,26 @@ class OrderController extends AbstractController
             ];
             return $this->response($data, 422);
         }
-
     }
 
     /**
      * @param OrderRepository $orderRepository
-     * @param UserRepository $userRepository
-     * @param $userId
-     * @param $orderId
+     * @param $id
      * @return JsonResponse
-     * @Route("/users/{userId}/orders{orderId}", name="orders_get", methods={"GET"})
+     * @Route("/orders{id}", name="orders_get", methods={"GET"})
      */
-    public function getOrder(OrderRepository $orderRepository,UserRepository $userRepository, $userId,$orderId)
+    public function getOrder(OrderRepository $orderRepository,$id)
     {
-        $order = $orderRepository->find($orderId);
-        $user = $userRepository->find($userId);
+        $order = $orderRepository->find($id);
 
         if (!$order) {
             $data = [
                 'status' => 404,
                 'errors' => "Order not found",
             ];
-            return $this->response((array)$order);
+            return $this->response((array)$data);
         }
-
-        else
-            if (!$user) {
-                $data = [
-                    'status' => 404,
-                    'errors' => "User not found",
-                ];
-
-                return $this->response($data, 404);
-            }
-            return $this->response((array)$user);
+            return $this->response((array)$order);
         }
 
 
@@ -114,12 +89,10 @@ class OrderController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param OrderRepository $orderRepository
      * @param $id
-     * @param $idTwo
      * @return JsonResponse
-     * @Route("/users/{id}/orders/{idTwo}", name="orders_put", methods={"PUT"})
+     * @Route("/orders/{id}", name="orders_put", methods={"PUT"})
      */
-    public function updateOrder(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id,$idTwo){
-
+    public function updateOrder(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id){
 
 
         try{
@@ -135,11 +108,11 @@ class OrderController extends AbstractController
 
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->get('orderCode') || !$request->request->get('productId')){
+            if (!$request || !$request->get('user_id') || !$request->request->get('productId')){
                 throw new Exception();
             }
 
-            $order->setOrderCode($request->get('orderCode'));
+            $order->setUserId($request->get('user_id'));
             $order->setProductId($request->get('productId'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));

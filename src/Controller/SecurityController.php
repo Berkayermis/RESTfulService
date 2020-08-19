@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +14,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/", name="login")
+     * @Route("/login", name="login" , methods={"GET"})
      * @param Request $request
      * @param AuthenticationUtils $utils
      * @return Response
@@ -21,6 +23,7 @@ class SecurityController extends AbstractController
     {
         $error = $utils->getLastAuthenticationError();
         $lastUsername = $utils->getLastUsername();
+
         return $this->render('security/security.html.twig',[
             'error' => $error,
             'last_username' => $lastUsername
