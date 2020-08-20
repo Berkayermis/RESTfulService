@@ -41,7 +41,9 @@ class OrderController extends AbstractController
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
             $order->setShippingDate($request->get('shipping_date'));
-            $order->setUserId($user);
+            $user->addOrder($order);
+
+            $em->persist($user);
             $em->persist($order);
             $em->flush();
 
@@ -178,7 +180,7 @@ class OrderController extends AbstractController
         return new JsonResponse($data, $status, $headers);
     }
 
-    protected function transformJsonBody(\Symfony\Component\HttpFoundation\Request $request)
+    protected function transformJsonBody(Request $request)
     {
         $data = json_decode($request->getContent(), true);
 

@@ -36,10 +36,11 @@ class User implements  UserInterface, JsonSerializable
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user_id")
      */
-    private ArrayCollection $orders;
+    private Collection $orders;
 
     public function __construct()
     {
+
         $this->orders = new ArrayCollection();
     }
 
@@ -73,12 +74,22 @@ class User implements  UserInterface, JsonSerializable
     }
 
     /**
-    * @return Collection|Order[]
+    * @return ArrayCollection|Order[]
      */
     public function getOrders(): Collection
     {
         return $this->orders;
     }
+
+    /**
+     * @param Collection $orders
+     * @return $this
+     */
+    public function setOrders(Collection $orders){
+        $this->orders = $orders;
+        return $this;
+    }
+
 
 
     public function getRoles(){

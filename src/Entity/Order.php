@@ -24,7 +24,7 @@ class Order implements JsonSerializable
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      */
-    private User $user_id;
+    private UserInterface $user_id;
 
 
     /**
@@ -101,12 +101,12 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getUserId(): User
+    public function getUserId(): UserInterface
     {
         return $this->user_id;
     }
 
-    public function setUserId(User $user_id): self
+    public function setUserId(UserInterface $user_id): self
     {
         $this->user_id = $user_id;
         return $this;
