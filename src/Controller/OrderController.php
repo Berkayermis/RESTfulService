@@ -45,7 +45,7 @@ class OrderController extends AbstractController
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
             $order->setShippingDate($request->get('shipping_date'));
-            $order->setUserId($request->get('user_id'));
+            $order->setUserId($user);
             $em->persist($order);
             $em->persist($user);
             $em->flush();
