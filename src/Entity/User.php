@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,12 +33,14 @@ class User implements  UserInterface, \JsonSerializable
     private $password;
 
     /**
-     * @ORM\Column(type="integer")
      * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user_id")
-     *
-     * @return Collection|Order[]
      */
     private $orders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -68,6 +71,9 @@ class User implements  UserInterface, \JsonSerializable
         return $this;
     }
 
+    /**
+    * @return Collection|Order[]
+     */
     public function getOrders(): Collection
     {
         return $this->orders;
@@ -95,5 +101,28 @@ class User implements  UserInterface, \JsonSerializable
             "password" => $this->getPassword(),
             "orders" => $this->getOrders()
         ];
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+            // set the owning side to null (unless already changed)
+            if ($order->getUserId() === $this) {
+                $order->setUserId(null);
+            }
+        }
+
+        return $this;
     }
 }

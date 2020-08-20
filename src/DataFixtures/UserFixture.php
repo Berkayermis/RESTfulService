@@ -24,6 +24,7 @@ class UserFixture extends Fixture
         $user->setPassword(
             $this->encoder->encodePassword($user,'0000')
         );
+
         $manager->persist($user);
 
         $user2 = new User();

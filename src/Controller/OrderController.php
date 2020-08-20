@@ -2,11 +2,13 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\User;
 use App\Repository\OrderRepository;
 use App\Controller\AuthController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,17 +34,20 @@ class OrderController extends AbstractController
         try{
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->request->get('user_id')  || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
+            if (!$request || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
                 throw new Exception();
             }
 
+
+            $user = new User();
             $order = new Order();
-            $order->setUserId($request->get('user_id'));
             $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
             $order->setShippingDate($request->get('shipping_date'));
+            $order->setUserId($request->get('user_id'));
             $em->persist($order);
+            $em->persist($user);
             $em->flush();
 
 
@@ -77,7 +82,7 @@ class OrderController extends AbstractController
                 'status' => 404,
                 'errors' => "Order not found",
             ];
-            return $this->response((array)$data);
+            return $this->response($data,404);
         }
             return $this->response((array)$order);
         }
@@ -108,15 +113,15 @@ class OrderController extends AbstractController
 
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->get('user_id') || !$request->request->get('productId')){
+            if (!$request || !$request->request->get('user_id')  || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
                 throw new Exception();
             }
 
             $order->setUserId($request->get('user_id'));
-            $order->setProductId($request->get('productId'));
+            $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
-            $order->setShippingDate($request->get('shippingDate'));
+            $order->setShippingDate($request->get('shipping_date'));
             $entityManager->persist($order);
             $entityManager->flush();
 

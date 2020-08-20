@@ -82,4 +82,5 @@ class AuthController extends ApiController
         return $this->response((array)("username: ".$user->getUsername(). ", password: ".$user->getPassword()));
     }
 
+
 }

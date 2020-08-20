@@ -106,7 +106,7 @@ class Order implements \JsonSerializable
         return $this->user_id;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUserId(int $user_id): self
     {
         $this->user_id = $user_id;
         return $this;
