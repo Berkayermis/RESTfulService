@@ -29,5 +29,7 @@ specific_orders:
   controller: App\Controller\OrderController::getOrder
   methods: GET
 
+login:
+  path: /login
 
 

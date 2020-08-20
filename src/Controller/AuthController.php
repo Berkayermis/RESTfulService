@@ -12,12 +12,44 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 
 class AuthController extends ApiController
 {
+    /**
+     * @var  TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $storage)
+    {
+        $this->tokenStorage = $storage;
+    }
+
+
+
+    /**
+     * @Route("/login",name="login",methods={"POST"})
+     */
+    public function getCurrentUser()
+    {
+        $token = $this->tokenStorage->getToken('tokenId');
+        if ($token instanceof TokenInterface) {
+
+            /** @var User $user */
+            $user = $token->getUser();
+            return $user;
+
+        } else {
+            return null;
+        }
+    }
+
+
     /**
      * @param UserRepository $userRepository
      * @return JsonResponse
@@ -60,7 +92,8 @@ class AuthController extends ApiController
      */
     public function getTokenUser(UserInterface $user, JWTTokenManagerInterface $JWTManager)
     {
-        return new JsonResponse(['token' => $JWTManager->create($user)]);
+        $token = $JWTManager->create($user);
+        return new JsonResponse(['token' => $token]);
     }
 
     /**
@@ -79,8 +112,7 @@ class AuthController extends ApiController
             ];
             return $this->response($data, 404);
         }
-        return $this->response((array)("username: ".$user->getUsername(). ", password: ".$user->getPassword()));
+        return $this->response((array)$user->getOrders());
     }
-
 
 }

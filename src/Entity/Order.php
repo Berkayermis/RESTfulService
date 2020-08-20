@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
  */
-class Order implements \JsonSerializable
+class Order implements JsonSerializable
 {
 
     /**
@@ -17,43 +18,42 @@ class Order implements \JsonSerializable
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    protected ?int $id;
 
 
     /**
-     * @ORM\Column(type="integer",unique=true)
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      */
-    private $user_id;
+    private User $user_id;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $product_id;
+    private int $product_id;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $quantity;
+    private int $quantity;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $address;
+    private string $address;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $shipping_date;
+    private int $shipping_date;
     
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getProductId(): ?int
+    public function getProductId(): int
     {
         return $this->product_id;
     }
@@ -65,7 +65,7 @@ class Order implements \JsonSerializable
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
@@ -77,7 +77,7 @@ class Order implements \JsonSerializable
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getAddress(): string
     {
         return $this->address;
     }
@@ -89,7 +89,7 @@ class Order implements \JsonSerializable
         return $this;
     }
 
-    public function getShippingDate(): ?int
+    public function getShippingDate(): int
     {
         return $this->shipping_date;
     }
@@ -101,12 +101,12 @@ class Order implements \JsonSerializable
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUserId(): User
     {
         return $this->user_id;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUserId(User $user_id): self
     {
         $this->user_id = $user_id;
         return $this;
