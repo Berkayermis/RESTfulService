@@ -34,7 +34,7 @@ class User implements  UserInterface, JsonSerializable
     private string $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
      */
     private Collection $orders;
 
@@ -74,9 +74,9 @@ class User implements  UserInterface, JsonSerializable
     }
 
     /**
-    * @return ArrayCollection|Order[]
+    * @return Collection|Order[]
      */
-    public function getOrders(): Collection
+    public function getOrders(): ?Collection
     {
         return $this->orders;
     }
@@ -103,23 +103,11 @@ class User implements  UserInterface, JsonSerializable
     public function eraseCredentials(){
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize()
-    {
-        return [
-            "username" => $this->getUsername(),
-            "password" => $this->getPassword(),
-            "orders" => $this->getOrders()
-        ];
-    }
-
     public function addOrder(Order $order): self
     {
         if (!$this->orders->contains($order)) {
             $this->orders[] = $order;
-            $order->setUserId($this);
+            $order->setUser($this);
         }
 
         return $this;
@@ -130,11 +118,24 @@ class User implements  UserInterface, JsonSerializable
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);
             // set the owning side to null (unless already changed)
-            if ($order->getUserId() === $this) {
-                $order->setUserId(null);
+            if ($order->getUser() === $this) {
+                $order->setUser(null);
             }
         }
 
         return $this;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "username" => $this->getUsername(),
+            "password" => $this->getPassword(),
+            "orders" => $this->getOrders()
+        ];
     }
 }

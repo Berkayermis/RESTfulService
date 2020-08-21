@@ -19,16 +19,6 @@ test:
   path: /api/test
   controller: App\Controller\ApiController::test
 
-order:
-  path: /orders
-  controller: App\Controller\OrderController::addOrder
-  methods: POST
-
-specific_orders:
-  path: /orders/{id}
-  controller: App\Controller\OrderController::getOrder
-  methods: GET
-
 login:
   path: /login
 

@@ -20,95 +20,94 @@ class Order implements JsonSerializable
      */
     protected ?int $id;
 
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      */
-    private UserInterface $user_id;
+    private User $user;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private int $product_id;
+    private ?int $productId;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private int $quantity;
+    private ?int $quantity;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private string $address;
+    private ?string $address;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private int $shipping_date;
+    private ?int $shippingDate;
     
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProductId(): int
+    public function getProductId(): ?int
     {
-        return $this->product_id;
+        return $this->productId;
     }
 
-    public function setProductId(int $product_id): self
+    public function setProductId($productId): self
     {
-        $this->product_id = $product_id;
+        $this->productId = $productId;
 
         return $this;
     }
 
-    public function getQuantity(): int
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
 
-    public function setQuantity(int $quantity): self
+    public function setQuantity($quantity): self
     {
         $this->quantity = $quantity;
 
         return $this;
     }
 
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress($address): self
     {
         $this->address = $address;
 
         return $this;
     }
 
-    public function getShippingDate(): int
+    public function getShippingDate(): ?int
     {
-        return $this->shipping_date;
+        return $this->shippingDate;
     }
 
-    public function setShippingDate(int $shipping_date): self
+    public function setShippingDate($shippingDate): self
     {
-        $this->shipping_date = $shipping_date;
+        $this->shippingDate = $shippingDate;
 
         return $this;
     }
 
-    public function getUserId(): UserInterface
+    public function getUser():User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(UserInterface $user_id): self
+    public function setUser(User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
         return $this;
     }
 
@@ -118,11 +117,11 @@ class Order implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "user_id" => $this->getUserId(),
-            "product_id" => $this->getProductId(),
+            "productId" => $this->getProductId(),
             "quantity" => $this->getQuantity(),
             "address" => $this->getAddress(),
-            "shipping_date" => $this->getShippingDate()
+            "shippingDate" => $this->getShippingDate(),
+            "user"=>$this->getUser()
         ];
     }
 }

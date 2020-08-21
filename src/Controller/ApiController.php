@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ApiController extends AbstractController
 {
@@ -13,7 +12,7 @@ class ApiController extends AbstractController
     /**
      * @var integer HTTP status code - 200 (OK) by default
      */
-    protected $statusCode = 200;
+    protected int $statusCode = 200;
 
     /**
      * Gets the value of statusCode.
@@ -139,7 +138,7 @@ class ApiController extends AbstractController
     // this method allows us to accept JSON payloads in POST requests
     // since Symfony 4 doesn’t handle that automatically:
 
-    protected function transformJsonBody(\Symfony\Component\HttpFoundation\Request $request)
+    protected function transformJsonBody(Request $request)
     {
         $data = json_decode($request->getContent(), true);
 

@@ -2,14 +2,15 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Entity\User;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Tests\Security\Guard\JWTTokenAuthenticatorTest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class OrderController
@@ -18,32 +19,42 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class OrderController extends AbstractController
 {
+
+    /**
+     * @Route("/welcome",name="welcome",methods={"GET"})
+     * @param ApiController $apiController
+     * @return JsonResponse
+     */
+    public function getCurrentUser(ApiController $apiController)
+    {
+        $user = $apiController->getUser();
+        return $this->response((array)$user);
+    }
+
     /**
      * @param Request $request
      * @param EntityManagerInterface $em
+     * @param ApiController $apiController
      * @return JsonResponse
      * @Route("/orders", name="orders_add", methods={"POST"})
      */
-    public function addOrder(Request $request, EntityManagerInterface $em)
+    public function addOrder(Request $request, EntityManagerInterface $em,ApiController $apiController)
     {
 
         try{
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
+            if (!$request || !$request->request->get('productId') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shippingDate')){
                 throw new Exception();
             }
 
-
-            $user = new User();
+            $user = $apiController->getUser();
             $order = new Order();
-            $order->setProductId($request->get('product_id'));
+            $order->setProductId($request->get('productId'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
-            $order->setShippingDate($request->get('shipping_date'));
-            $user->addOrder($order);
-
-            $em->persist($user);
+            $order->setShippingDate($request->get('shippingDate'));
+            $order->setUser($user);
             $em->persist($order);
             $em->flush();
 
@@ -114,7 +125,7 @@ class OrderController extends AbstractController
                 throw new Exception();
             }
 
-            $order->setUserId($request->get('user_id'));
+            $order->setUser($request->get('user_id'));
             $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
