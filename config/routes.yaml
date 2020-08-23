@@ -19,7 +19,5 @@ test:
   path: /api/test
   controller: App\Controller\ApiController::test
 
-login:
-  path: /login
 
 

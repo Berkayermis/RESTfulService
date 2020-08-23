@@ -5,12 +5,12 @@ use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Lexik\Bundle\JWTAuthenticationBundle\Tests\Security\Guard\JWTTokenAuthenticatorTest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 
 /**
  * Class OrderController
@@ -22,24 +22,24 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/welcome",name="welcome",methods={"GET"})
-     * @param ApiController $apiController
+     * @param TokenStorageInterface $tokenStorage
      * @return JsonResponse
      */
-    public function getCurrentUser(ApiController $apiController)
+    public function getCurrentUser(TokenStorageInterface $tokenStorage)
     {
-        $user = $apiController->getUser();
+        $user = $tokenStorage->getToken()->getUser();
         return $this->response((array)$user);
     }
 
     /**
      * @param Request $request
-     * @param EntityManagerInterface $em
-     * @param ApiController $apiController
+     * @param TokenStorageInterface $tokenStorage
      * @return JsonResponse
      * @Route("/orders", name="orders_add", methods={"POST"})
      */
-    public function addOrder(Request $request, EntityManagerInterface $em,ApiController $apiController)
+    public function addOrder(Request $request,TokenStorageInterface $tokenStorage)
     {
+        $entityManager = $this->getDoctrine()->getManager();
 
         try{
             $request = $this->transformJsonBody($request);
@@ -48,15 +48,16 @@ class OrderController extends AbstractController
                 throw new Exception();
             }
 
-            $user = $apiController->getUser();
+            $user = $tokenStorage->getToken()->getUser();
             $order = new Order();
+
             $order->setProductId($request->get('productId'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
             $order->setShippingDate($request->get('shippingDate'));
             $order->setUser($user);
-            $em->persist($order);
-            $em->flush();
+            $entityManager->persist($order);
+            $entityManager->flush();
 
 
             $data = [

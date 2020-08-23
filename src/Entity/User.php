@@ -24,6 +24,11 @@ class User implements  UserInterface, JsonSerializable
     protected int $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
+     */
+    private Collection $orders;
+
+    /**
      * @ORM\Column(type="string", length=255,unique=true)
      */
     private string $username;
@@ -33,10 +38,6 @@ class User implements  UserInterface, JsonSerializable
      */
     private string $password;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
-     */
-    private Collection $orders;
 
     public function __construct()
     {
@@ -81,16 +82,6 @@ class User implements  UserInterface, JsonSerializable
         return $this->orders;
     }
 
-    /**
-     * @param Collection $orders
-     * @return $this
-     */
-    public function setOrders(Collection $orders){
-        $this->orders = $orders;
-        return $this;
-    }
-
-
 
     public function getRoles(){
         return [
@@ -122,10 +113,8 @@ class User implements  UserInterface, JsonSerializable
                 $order->setUser(null);
             }
         }
-
         return $this;
     }
-
 
     /**
      * @inheritDoc
@@ -133,9 +122,9 @@ class User implements  UserInterface, JsonSerializable
     public function jsonSerialize()
     {
         return [
+            "orders"=> $this->getOrders(),
             "username" => $this->getUsername(),
-            "password" => $this->getPassword(),
-            "orders" => $this->getOrders()
+            "password" => $this->getPassword()
         ];
     }
 }

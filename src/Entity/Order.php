@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
@@ -18,7 +17,7 @@ class Order implements JsonSerializable
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    protected ?int $id;
+    protected int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
@@ -29,30 +28,30 @@ class Order implements JsonSerializable
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $productId;
+    private int $productId;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $quantity;
+    private int $quantity;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $address;
+    private string $address;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $shippingDate;
+    private int $shippingDate;
     
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getProductId(): ?int
+    public function getProductId(): int
     {
         return $this->productId;
     }
@@ -64,7 +63,7 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
@@ -76,7 +75,7 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getAddress(): string
     {
         return $this->address;
     }
@@ -88,7 +87,7 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getShippingDate(): ?int
+    public function getShippingDate(): int
     {
         return $this->shippingDate;
     }
