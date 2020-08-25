@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use JsonSerializable;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -25,8 +26,9 @@ class User implements  UserInterface, JsonSerializable
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
+     * @JoinColumn(name="orders")
      */
-    private Collection $orders;
+    protected Collection $orders;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
@@ -77,7 +79,7 @@ class User implements  UserInterface, JsonSerializable
     /**
     * @return Collection|Order[]
      */
-    public function getOrders(): ?Collection
+    public function getOrders(): Collection
     {
         return $this->orders;
     }

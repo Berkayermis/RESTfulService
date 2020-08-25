@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-
 /**
  * Class OrderController
  * @package App\Controller
@@ -39,25 +38,28 @@ class OrderController extends AbstractController
      */
     public function addOrder(Request $request,TokenStorageInterface $tokenStorage)
     {
+        $user = $tokenStorage->getToken()->getUser();
         $entityManager = $this->getDoctrine()->getManager();
+
 
         try{
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->request->get('productId') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shippingDate')){
+            if (!$request || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
                 throw new Exception();
             }
 
-            $user = $tokenStorage->getToken()->getUser();
             $order = new Order();
 
-            $order->setProductId($request->get('productId'));
+            $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));
-            $order->setShippingDate($request->get('shippingDate'));
+            $order->setShippingDate($request->get('shipping_date'));
             $order->setUser($user);
+
             $entityManager->persist($order);
             $entityManager->flush();
+
 
 
             $data = [
@@ -66,14 +68,12 @@ class OrderController extends AbstractController
             ];
             return $this->response($data);
 
-        }catch (Exception $e){
-            $data = [
-                'status' => 422,
-                'errors' => "Order no valid",
-
-            ];
-            return $this->response($data, 422);
+        }catch (Exception $logger){
+            $logger->getMessage();
+            return $this->response((array)$logger, 422);
         }
+
+
     }
 
     /**
@@ -95,8 +95,6 @@ class OrderController extends AbstractController
         }
             return $this->response((array)$order);
         }
-
-
 
     /**
      * @param Request $request

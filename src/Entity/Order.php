@@ -19,11 +19,11 @@ class Order implements JsonSerializable
      */
     protected int $id;
 
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      */
     private User $user;
-
 
     /**
      * @ORM\Column(type="integer")
@@ -99,7 +99,7 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getUser():User
+    public function getUser():?User
     {
         return $this->user;
     }
