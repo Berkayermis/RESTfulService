@@ -18,18 +18,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class OrderController extends AbstractController
 {
-
-    /**
-     * @Route("/welcome",name="welcome",methods={"GET"})
-     * @param TokenStorageInterface $tokenStorage
-     * @return JsonResponse
-     */
-    public function getCurrentUser(TokenStorageInterface $tokenStorage)
-    {
-        $user = $tokenStorage->getToken()->getUser();
-        return $this->response((array)$user);
-    }
-
     /**
      * @param Request $request
      * @param TokenStorageInterface $tokenStorage
@@ -60,8 +48,6 @@ class OrderController extends AbstractController
             $entityManager->persist($order);
             $entityManager->flush();
 
-
-
             $data = [
                 'status' => 200,
                 'success' => "Order added successfully",
@@ -72,15 +58,13 @@ class OrderController extends AbstractController
             $logger->getMessage();
             return $this->response((array)$logger, 422);
         }
-
-
     }
 
     /**
      * @param OrderRepository $orderRepository
      * @param $id
      * @return JsonResponse
-     * @Route("/orders{id}", name="orders_get", methods={"GET"})
+     * @Route("/orders/{id}", name="orders_get", methods={"GET"})
      */
     public function getOrder(OrderRepository $orderRepository,$id)
     {
@@ -97,15 +81,27 @@ class OrderController extends AbstractController
         }
 
     /**
+     * @Route("/orders", name="all_orders", methods={"GET"})
+     * @param OrderRepository $orderRepository
+     * @return JsonResponse
+     */
+    public function getAllOrders(OrderRepository $orderRepository){
+        $orders = $orderRepository->findAll();
+        return $this->response($orders);
+
+    }
+
+
+    /**
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param OrderRepository $orderRepository
      * @param $id
      * @return JsonResponse
      * @Route("/orders/{id}", name="orders_put", methods={"PUT"})
      */
-    public function updateOrder(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id){
+    public function updateOrder(Request $request, OrderRepository $orderRepository, $id){
 
+        $entityManager = $this->getDoctrine()->getManager();
 
         try{
             $order = $orderRepository->find($id);
@@ -120,11 +116,10 @@ class OrderController extends AbstractController
 
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->request->get('user_id')  || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
+            if (!$request || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
                 throw new Exception();
             }
 
-            $order->setUser($request->get('user_id'));
             $order->setProductId($request->get('product_id'));
             $order->setQuantity($request->get('quantity'));
             $order->setAddress($request->get('address'));

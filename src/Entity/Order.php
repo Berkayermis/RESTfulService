@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Table;
 use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
+ * @Table("my_table")
  */
 class Order implements JsonSerializable
 {
