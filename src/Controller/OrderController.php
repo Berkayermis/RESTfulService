@@ -56,7 +56,7 @@ class OrderController extends AbstractController
             $order->setAddress($request->get('address'));
             $order->setShippingDate($request->get('shipping_date'));
             $order->setUser($user);
-
+            
             $entityManager->persist($order);
             $entityManager->flush();
 
