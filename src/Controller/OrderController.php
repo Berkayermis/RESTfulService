@@ -5,11 +5,15 @@ use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
+
 
 /**
  * Class OrderController
@@ -18,22 +22,39 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class OrderController extends AbstractController
 {
+
     /**
      * @param Request $request
      * @param TokenStorageInterface $tokenStorage
      * @return JsonResponse
      * @Route("/orders", name="orders_add", methods={"POST"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Add a new Order",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Parameter(parameter="order",name="order",in="body",required=true,type="array",description="order info",
+     *      @SWG\Schema(
+     *          @SWG\Items(
+     *              type="integer"
+     * )
+     * )
+     * ),
+     * @SWG\Tag(name="orders")
+     * @Security(name="Bearer")
      */
     public function addOrder(Request $request,TokenStorageInterface $tokenStorage)
     {
         $user = $tokenStorage->getToken()->getUser();
         $entityManager = $this->getDoctrine()->getManager();
 
-
         try{
             $request = $this->transformJsonBody($request);
 
-            if (!$request || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') || !$request->request->get('shipping_date')){
+            if (!$request || !$request->request->get('product_id') || !$request->request->get('quantity') || !$request->request->get('address') ){
                 throw new Exception();
             }
 
@@ -44,7 +65,8 @@ class OrderController extends AbstractController
             $order->setAddress($request->get('address'));
             $order->setShippingDate($request->get('shipping_date'));
             $order->setUser($user);
-            
+            $user->addOrder($order);
+            $entityManager->persist($user);
             $entityManager->persist($order);
             $entityManager->flush();
 
@@ -60,11 +82,22 @@ class OrderController extends AbstractController
         }
     }
 
+
     /**
      * @param OrderRepository $orderRepository
      * @param $id
      * @return JsonResponse
      * @Route("/orders/{id}", name="orders_get", methods={"GET"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the orders with ID",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="orders")
+     * @Security(name="Bearer")
      */
     public function getOrder(OrderRepository $orderRepository,$id)
     {
@@ -82,6 +115,16 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/orders", name="all_orders", methods={"GET"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the all orders",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="orders")
+     * @Security(name="Bearer")
      * @param OrderRepository $orderRepository
      * @return JsonResponse
      */
@@ -98,6 +141,23 @@ class OrderController extends AbstractController
      * @param $id
      * @return JsonResponse
      * @Route("/orders/{id}", name="orders_put", methods={"PUT"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Update an order",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Parameter(parameter="update_order",name="update_order",in="body",required=true,type="array",description="order updating",
+     *      @SWG\Schema(
+     *          @SWG\Items(
+     *              type="integer"
+     *              )
+     *          )
+     *      )
+     * @SWG\Tag(name="orders")
+     * @Security(name="Bearer")
      */
     public function updateOrder(Request $request, OrderRepository $orderRepository, $id){
 
@@ -150,6 +210,16 @@ class OrderController extends AbstractController
      * @param $id
      * @return JsonResponse
      * @Route("/orders/{id}", name="orders_delete", methods={"DELETE"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Delete the order",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="orders")
+     * @Security(name="Bearer")
      */
     public function deleteOrder(EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id){
         $order = $orderRepository->find($id);

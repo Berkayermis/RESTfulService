@@ -6,13 +6,14 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 class AuthController extends ApiController
 {
@@ -21,6 +22,16 @@ class AuthController extends ApiController
      * @param UserRepository $userRepository
      * @return JsonResponse
      * @Route("/users", name="users", methods={"GET"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="List all users",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      */
     public function getUsers(UserRepository $userRepository){
         $data = $userRepository->findAll();
@@ -33,6 +44,23 @@ class AuthController extends ApiController
      * @param UserPasswordEncoderInterface $encoder
      * @return JsonResponse
      * @Route("/users", name="users", methods={"POST"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Add a new user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Parameter(parameter="user",name="add_user",in="body",required=true,type="array",description="add a new user",
+     *      @SWG\Schema(
+     *          @SWG\Items(
+     *              type="integer"
+     * )
+     * )
+     * ),
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      */
     public function register(Request $request,EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
     {
@@ -68,6 +96,16 @@ class AuthController extends ApiController
      * @param $id
      * @return JsonResponse
      * @Route("/users/{id}", name="users_get", methods={"GET"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Get an user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      */
     public function getSingleUser(UserRepository $userRepository, $id){
         $user = $userRepository->find($id);

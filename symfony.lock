@@ -196,6 +196,9 @@
             "./config/packages/security_checker.yaml"
         ]
     },
+    "symfony/asset": {
+        "version": "v5.1.4"
+    },
     "symfony/cache": {
         "version": "v5.1.3"
     },

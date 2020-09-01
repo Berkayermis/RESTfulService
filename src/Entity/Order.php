@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use JsonSerializable;
+use Swagger\Annotations as SWG;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
@@ -21,7 +22,6 @@ class Order implements JsonSerializable
      */
     protected int $id;
 
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      */
@@ -29,9 +29,9 @@ class Order implements JsonSerializable
 
     /**
      * @ORM\Column(type="integer")
+     * @SWG\Property (type="integer")
      */
     private int $productId;
-
 
     /**
      * @ORM\Column(type="integer")
@@ -47,7 +47,8 @@ class Order implements JsonSerializable
      * @ORM\Column(type="integer")
      */
     private int $shippingDate;
-    
+
+
     public function getId(): int
     {
         return $this->id;
