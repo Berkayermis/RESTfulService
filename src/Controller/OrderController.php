@@ -5,14 +5,14 @@ use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 
 /**
@@ -43,7 +43,7 @@ class OrderController extends AbstractController
      * )
      * )
      * ),
-     * @SWG\Tag(name="orders")
+     * @SWG\Tag(name="Orders")
      * @Security(name="Bearer")
      */
     public function addOrder(Request $request,TokenStorageInterface $tokenStorage)
@@ -96,7 +96,7 @@ class OrderController extends AbstractController
      *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
      *     )
      * )
-     * @SWG\Tag(name="orders")
+     * @SWG\Tag(name="Orders")
      * @Security(name="Bearer")
      */
     public function getOrder(OrderRepository $orderRepository,$id)
@@ -123,7 +123,7 @@ class OrderController extends AbstractController
      *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
      *     )
      * )
-     * @SWG\Tag(name="orders")
+     * @SWG\Tag(name="Orders")
      * @Security(name="Bearer")
      * @param OrderRepository $orderRepository
      * @return JsonResponse
@@ -152,11 +152,11 @@ class OrderController extends AbstractController
      * @SWG\Parameter(parameter="update_order",name="update_order",in="body",required=true,type="array",description="order updating",
      *      @SWG\Schema(
      *          @SWG\Items(
-     *              type="integer"
+     *              type="string"
      *              )
      *          )
      *      )
-     * @SWG\Tag(name="orders")
+     * @SWG\Tag(name="Orders")
      * @Security(name="Bearer")
      */
     public function updateOrder(Request $request, OrderRepository $orderRepository, $id){
@@ -218,7 +218,7 @@ class OrderController extends AbstractController
      *         @SWG\Items(ref=@Model(type=Order::class, groups={"full"}))
      *     )
      * )
-     * @SWG\Tag(name="orders")
+     * @SWG\Tag(name="Orders")
      * @Security(name="Bearer")
      */
     public function deleteOrder(EntityManagerInterface $entityManager, OrderRepository $orderRepository, $id){

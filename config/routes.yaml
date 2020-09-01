@@ -13,6 +13,7 @@ users:
 
 api_login_check:
   path: /api/login_check
+  methods: POST
   controller: App\Controller\AuthController::getTokenUser
 
 test:
